@@ -1,3 +1,6 @@
 venv
 .env
 data.json
+*.pyc
+*.cpython
+__pycache__

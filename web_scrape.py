@@ -26,8 +26,9 @@ def convert_page(amount, from_currency, to_currency):
         }
     }
 
-    data_file.append(result)
+    
     with open('data.json', 'w+') as f:
+        data_file.append(result)
         json.dump(data_file, f, indent=4)
 
     return result
