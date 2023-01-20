@@ -5,33 +5,36 @@ import json
 data_file=[]
 
 def convert_page(amount, from_currency, to_currency):
-    url = f'https://wise.com/gb/currency-converter/{from_currency}-to-{to_currency}-rate?amount={amount}'
+    try:
+        url = f'https://wise.com/gb/currency-converter/{from_currency}-to-{to_currency}-rate?amount={amount}'
 
-    response = requests.get(url).text
-    data = bs(response, "html.parser")
+        response = requests.get(url).text
+        data = bs(response, "html.parser")
 
-    rate = data.find("span", class_="text-success").text.strip()
-    time_data = data.find("small", class_="m-r-1").text.split()
-    time_of_conversion = time_data[4]
-    timezone = time_data[5]
-    converted_amount = amount * float(rate)
+        rate = data.find("span", class_="text-success").text.strip()
+        time_data = data.find("small", class_="m-r-1").text.split()
+        time_of_conversion = time_data[4]
+        timezone = time_data[5]
+        converted_amount = amount * float(rate)
 
-    result = {
-        "converted_amount": converted_amount,
-        "rate": float(rate),
-        "metadata": {
-            "time_of_conversion": f'{time_of_conversion} {timezone}',
-            "from_currency": from_currency.upper(),
-            "to_currency": to_currency.upper()
+        result = {
+            "converted_amount": converted_amount,
+            "rate": float(rate),
+            "metadata": {
+                "time_of_conversion": f'{time_of_conversion} {timezone}',
+                "from_currency": from_currency.upper(),
+                "to_currency": to_currency.upper()
+            }
         }
-    }
 
-    
-    with open('data.json', 'w+') as f:
-        data_file.append(result)
-        json.dump(data_file, f, indent=4)
+        
+        with open('data.json', 'w+') as f:
+            data_file.append(result)
+            json.dump(data_file, f, indent=4)
 
-    return result
+        return result
+    except:
+        return {"error": "Please enter valid parameters. It should be amount(float), from_currency(str eg:usd) and to_currency(str eg:eur). Please use http://127.0.0.1:8000/currencies?api_key=value to check supported currencies"}
 
 def get_currencies():
     url = f'https://wise.com/gb/currency-converter/currencies'
