@@ -31,6 +31,7 @@ def convert_page(amount, from_currency, to_currency):
         with open('data.json', 'w+') as f:
             data_file.append(result)
             json.dump(data_file, f, indent=4)
+        f.close()
 
         return result
     except:
@@ -55,6 +56,9 @@ def get_currencies():
 
 
 def get_history():
-    with open('data.json', 'r') as f:
-        data_file = json.load(f)
-    return data_file
+    try:
+        with open('data.json', 'r') as f:
+            data_file = json.load(f)
+        return data_file
+    except:
+        return {"message": "There is no history yet..."}
